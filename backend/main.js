@@ -5,6 +5,7 @@ const { testConnection } = require("./app/db");
 // Import routes
 const usersRouter = require("./routes/users");
 const transactionsRouter = require("./routes/transactions");
+const financialStateRouter = require("./routes/financialState");
 
 const app = express();
 const PORT = 3000;
@@ -26,6 +27,7 @@ app.get("/health", (req, res) => {
 // Register API routes
 app.use("/api/users", usersRouter);
 app.use("/api/transactions", transactionsRouter);
+app.use("/api/financial-state", financialStateRouter);
 
 // Start server and connect to database
 async function startServer() {
