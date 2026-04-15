@@ -3,12 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Financial Digital Twin</title>
+    <meta name="description" content="Financial Digital Twin — Simulate your financial future with Antigravity Economics">
+    <title>Financial Digital Twin | Antigravity Economics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Financial Digital Twin</h1>
-    <p>Dashboard coming in Phase 7.</p>
+
+    <!-- ========== HEADER ========== -->
+    <header id="app-header">
+        <div class="header-left">
+            <div class="logo-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#grad)" stroke-width="2">
+                    <defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#a78bfa"/>
+                        <stop offset="100%" style="stop-color:#06b6d4"/>
+                    </linearGradient></defs>
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+            </div>
+            <h1>Financial Digital Twin</h1>
+        </div>
+        <div class="header-right">
+            <select id="user-select" aria-label="Select User">
+                <option value="">Loading users...</option>
+            </select>
+            <div id="connection-status" class="status-dot" title="API Status"></div>
+        </div>
+    </header>
+
+    <!-- ========== MAIN LAYOUT ========== -->
+    <main id="app-main">
+
+        <!-- LEFT COLUMN -->
+        <section class="col-left">
+
+            <!-- Financial State Cards -->
+            <div class="section-title">
+                <span class="section-icon">📊</span>
+                <h2>Financial State</h2>
+                <button id="btn-refresh-state" class="btn-icon" title="Refresh">↻</button>
+            </div>
+
+            <div id="state-cards" class="metric-grid">
+                <div class="metric-card" id="card-income">
+                    <span class="metric-label">Total Income</span>
+                    <span class="metric-value" id="val-income">—</span>
+                </div>
+                <div class="metric-card" id="card-expenses">
+                    <span class="metric-label">Total Expenses</span>
+                    <span class="metric-value" id="val-expenses">—</span>
+                </div>
+                <div class="metric-card" id="card-investments">
+                    <span class="metric-label">Investments</span>
+                    <span class="metric-value" id="val-investments">—</span>
+                </div>
+                <div class="metric-card" id="card-debt">
+                    <span class="metric-label">Total Debt</span>
+                    <span class="metric-value" id="val-debt">—</span>
+                </div>
+                <div class="metric-card highlight" id="card-networth">
+                    <span class="metric-label">Net Worth</span>
+                    <span class="metric-value" id="val-networth">—</span>
+                </div>
+                <div class="metric-card highlight-alt" id="card-savings-rate">
+                    <span class="metric-label">Savings Rate</span>
+                    <span class="metric-value" id="val-savings-rate">—</span>
+                </div>
+            </div>
+
+            <!-- Add Transaction -->
+            <div class="section-title">
+                <span class="section-icon">💸</span>
+                <h2>Add Transaction</h2>
+            </div>
+
+            <form id="txn-form" class="glass-card">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="txn-type">Type</label>
+                        <select id="txn-type" required>
+                            <option value="income">Income</option>
+                            <option value="expense" selected>Expense</option>
+                            <option value="investment">Investment</option>
+                            <option value="debt_payment">Debt Payment</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="txn-category">Category</label>
+                        <input type="text" id="txn-category" placeholder="e.g. salary, rent" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="txn-amount">Amount (₹)</label>
+                        <input type="number" id="txn-amount" placeholder="0.00" min="1" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="txn-date">Date</label>
+                        <input type="date" id="txn-date" required>
+                    </div>
+                </div>
+                <div class="form-group full-width">
+                    <label for="txn-desc">Description (optional)</label>
+                    <input type="text" id="txn-desc" placeholder="Brief note...">
+                </div>
+                <button type="submit" id="btn-add-txn" class="btn-primary">Add Transaction</button>
+            </form>
+
+            <!-- Recent Transactions -->
+            <div class="section-title">
+                <span class="section-icon">📜</span>
+                <h2>Recent Transactions</h2>
+            </div>
+            <div id="txn-list" class="glass-card txn-list-container">
+                <p class="placeholder-text">Select a user to view transactions</p>
+            </div>
+
+        </section>
+
+        <!-- RIGHT COLUMN -->
+        <section class="col-right">
+
+            <!-- Simulation Controls -->
+            <div class="section-title">
+                <span class="section-icon">🚀</span>
+                <h2>Simulation Engine</h2>
+            </div>
+
+            <div class="glass-card sim-controls">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sim-months">Months to Simulate</label>
+                        <input type="number" id="sim-months" value="12" min="1" max="360">
+                    </div>
+                    <div class="form-group">
+                        <label for="sim-savings">Starting Savings (₹)</label>
+                        <input type="number" id="sim-savings" value="0" min="0">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sim-debt-balance">Debt Balance (₹)</label>
+                        <input type="number" id="sim-debt-balance" value="96000" min="0">
+                    </div>
+                </div>
+                <div class="sim-buttons">
+                    <button id="btn-sim-normal" class="btn-secondary">Normal</button>
+                    <button id="btn-sim-antigravity" class="btn-antigravity">⚡ Antigravity</button>
+                    <button id="btn-sim-compare" class="btn-compare">Compare Both</button>
+                </div>
+            </div>
+
+            <!-- Comparison Summary -->
+            <div id="comparison-summary" class="glass-card comparison-box" style="display:none;">
+                <h3>⚖️ Normal vs Antigravity</h3>
+                <div class="compare-grid">
+                    <div class="compare-item">
+                        <span class="compare-label">Net Worth Difference</span>
+                        <span class="compare-value" id="cmp-networth">—</span>
+                    </div>
+                    <div class="compare-item">
+                        <span class="compare-label">Savings Difference</span>
+                        <span class="compare-value" id="cmp-savings">—</span>
+                    </div>
+                    <div class="compare-item">
+                        <span class="compare-label">Portfolio Difference</span>
+                        <span class="compare-value" id="cmp-portfolio">—</span>
+                    </div>
+                    <div class="compare-item highlight">
+                        <span class="compare-label">Antigravity Advantage</span>
+                        <span class="compare-value" id="cmp-advantage">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="section-title">
+                <span class="section-icon">📈</span>
+                <h2>Projections</h2>
+            </div>
+
+            <div class="glass-card chart-container">
+                <canvas id="chart-networth"></canvas>
+            </div>
+
+            <div class="glass-card chart-container">
+                <canvas id="chart-breakdown"></canvas>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast" aria-live="polite"></div>
+
     <script src="script.js"></script>
 </body>
 </html>
