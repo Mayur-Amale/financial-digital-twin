@@ -6,6 +6,7 @@ const { testConnection } = require("./app/db");
 const usersRouter = require("./routes/users");
 const transactionsRouter = require("./routes/transactions");
 const financialStateRouter = require("./routes/financialState");
+const simulationRouter = require("./routes/simulation");
 
 const app = express();
 const PORT = 3000;
@@ -28,6 +29,7 @@ app.get("/health", (req, res) => {
 app.use("/api/users", usersRouter);
 app.use("/api/transactions", transactionsRouter);
 app.use("/api/financial-state", financialStateRouter);
+app.use("/api/simulate", simulationRouter);
 
 // Start server and connect to database
 async function startServer() {
