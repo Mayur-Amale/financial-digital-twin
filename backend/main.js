@@ -7,6 +7,7 @@ const usersRouter = require("./routes/users");
 const transactionsRouter = require("./routes/transactions");
 const financialStateRouter = require("./routes/financialState");
 const simulationRouter = require("./routes/simulation");
+const reportsRouter = require("./routes/reports");
 
 const app = express();
 const PORT = 3000;
@@ -30,6 +31,7 @@ app.use("/api/users", usersRouter);
 app.use("/api/transactions", transactionsRouter);
 app.use("/api/financial-state", financialStateRouter);
 app.use("/api/simulate", simulationRouter);
+app.use("/api/reports", reportsRouter);
 
 // Start server and connect to database
 async function startServer() {
