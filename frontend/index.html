@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Financial Digital Twin — Simulate your financial future with Antigravity Economics">
-    <title>Financial Digital Twin | Antigravity Economics</title>
+    <meta name="description" content="Financial Digital Twin — Simulate your financial future with realistic investment projections">
+    <title>Financial Digital Twin | Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,72 +13,287 @@
 </head>
 <body>
 
-    <!-- ========== HEADER ========== -->
-    <header id="app-header">
-        <div class="header-left">
-            <div class="logo-icon">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="url(#grad)" stroke-width="2">
-                    <defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#a78bfa"/>
-                        <stop offset="100%" style="stop-color:#06b6d4"/>
-                    </linearGradient></defs>
+    <!-- ========== SIDEBAR OVERLAY (mobile) ========== -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- ========== SIDEBAR ========== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
                     <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
                 </svg>
             </div>
-            <h1>Financial Digital Twin</h1>
+            <div class="brand-text">
+                <span class="brand-name">FinTwin</span>
+                <span class="brand-tag">Digital Twin</span>
+            </div>
         </div>
-        <div class="header-right">
+
+        <nav class="sidebar-nav">
+            <div class="nav-section-label">Overview</div>
+            <div class="nav-item active" data-page="dashboard" id="nav-dashboard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="1"/>
+                    <rect x="14" y="3" width="7" height="7" rx="1"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1"/>
+                    <rect x="14" y="14" width="7" height="7" rx="1"/>
+                </svg>
+                Dashboard
+            </div>
+
+            <div class="nav-section-label">Manage</div>
+            <div class="nav-item" data-page="investments" id="nav-investments">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+                    <polyline points="16 7 22 7 22 13"/>
+                </svg>
+                Investments
+            </div>
+            <div class="nav-item" data-page="transactions" id="nav-transactions">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+                </svg>
+                Transactions
+            </div>
+
+            <div class="nav-section-label">Analysis</div>
+            <div class="nav-item" data-page="simulate" id="nav-simulate">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+                Simulate
+            </div>
+        </nav>
+
+        <div class="sidebar-user">
             <select id="user-select" aria-label="Select User">
                 <option value="">Loading users...</option>
             </select>
             <div id="connection-status" class="status-dot" title="API Status"></div>
         </div>
-    </header>
+    </aside>
 
-    <!-- ========== MAIN LAYOUT ========== -->
-    <main id="app-main">
+    <!-- ========== MAIN CONTENT ========== -->
+    <div class="main-wrapper">
 
-        <!-- LEFT COLUMN -->
-        <section class="col-left">
+        <!-- ========== TOP HEADER ========== -->
+        <header class="top-header">
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+                <button class="mobile-menu-btn" id="mobile-menu-btn" title="Menu">☰</button>
+                <h1 class="page-title">
+                    <span class="page-icon" id="page-icon">📊</span>
+                    <span id="page-title-text">Dashboard</span>
+                </h1>
+            </div>
+            <div class="header-actions">
+                <button id="btn-refresh-state" class="btn-icon-header" title="Refresh Financial State">↻</button>
+            </div>
+        </header>
+
+        <!-- ==========================================
+             PAGE: DASHBOARD
+             ========================================== -->
+        <div class="content-page active" id="page-dashboard">
 
             <!-- Financial State Cards -->
-            <div class="section-title">
-                <span class="section-icon">📊</span>
-                <h2>Financial State</h2>
-                <button id="btn-refresh-state" class="btn-icon" title="Refresh">↻</button>
+            <div class="section-header">
+                <div class="section-label">
+                    <span class="section-icon">💰</span>
+                    <h2>Financial Overview</h2>
+                </div>
             </div>
 
-            <div id="state-cards" class="metric-grid">
-                <div class="metric-card" id="card-income">
+            <div class="metrics-row" id="state-cards">
+                <div class="metric-card income-card" id="card-income">
+                    <div class="metric-card-top">
+                        <div class="metric-icon income">📈</div>
+                        <span class="metric-trend up" id="trend-income">—</span>
+                    </div>
                     <span class="metric-label">Total Income</span>
                     <span class="metric-value" id="val-income">—</span>
                 </div>
-                <div class="metric-card" id="card-expenses">
+                <div class="metric-card expense-card" id="card-expenses">
+                    <div class="metric-card-top">
+                        <div class="metric-icon expense">📉</div>
+                        <span class="metric-trend down" id="trend-expenses">—</span>
+                    </div>
                     <span class="metric-label">Total Expenses</span>
                     <span class="metric-value" id="val-expenses">—</span>
                 </div>
-                <div class="metric-card" id="card-investments">
+                <div class="metric-card investment-card" id="card-investments">
+                    <div class="metric-card-top">
+                        <div class="metric-icon investment">💼</div>
+                        <span class="metric-trend up" id="trend-investments">—</span>
+                    </div>
                     <span class="metric-label">Investments</span>
                     <span class="metric-value" id="val-investments">—</span>
                 </div>
-                <div class="metric-card" id="card-debt">
+                <div class="metric-card debt-card" id="card-debt">
+                    <div class="metric-card-top">
+                        <div class="metric-icon debt">🏦</div>
+                        <span class="metric-trend down" id="trend-debt">—</span>
+                    </div>
                     <span class="metric-label">Total Debt</span>
                     <span class="metric-value" id="val-debt">—</span>
                 </div>
-                <div class="metric-card highlight" id="card-networth">
+                <div class="metric-card networth-card" id="card-networth">
+                    <div class="metric-card-top">
+                        <div class="metric-icon networth">🏆</div>
+                        <span class="metric-trend up" id="trend-networth">—</span>
+                    </div>
                     <span class="metric-label">Net Worth</span>
                     <span class="metric-value" id="val-networth">—</span>
                 </div>
-                <div class="metric-card highlight-alt" id="card-savings-rate">
+                <div class="metric-card savings-card" id="card-savings-rate">
+                    <div class="metric-card-top">
+                        <div class="metric-icon savings-rate">🎯</div>
+                        <span class="metric-trend up" id="trend-savings">—</span>
+                    </div>
                     <span class="metric-label">Savings Rate</span>
                     <span class="metric-value" id="val-savings-rate">—</span>
                 </div>
             </div>
 
-            <!-- Add Transaction -->
-            <div class="section-title">
-                <span class="section-icon">💸</span>
-                <h2>Add Transaction</h2>
+            <!-- Quick Charts on Dashboard -->
+            <div class="section-header">
+                <div class="section-label">
+                    <span class="section-icon">📊</span>
+                    <h2>Portfolio Allocation</h2>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="glass-card chart-container">
+                    <div class="chart-title">📈 Net Worth Trend</div>
+                    <canvas id="chart-dashboard-trend"></canvas>
+                </div>
+                <div class="glass-card chart-container">
+                    <div class="chart-title">🍩 Expense Breakdown</div>
+                    <div class="donut-wrapper">
+                        <div class="donut-canvas-wrap">
+                            <canvas id="chart-dashboard-donut"></canvas>
+                        </div>
+                        <div class="donut-legend" id="dashboard-donut-legend"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             PAGE: INVESTMENTS
+             ========================================== -->
+        <div class="content-page" id="page-investments">
+
+            <div class="section-header">
+                <div class="section-label">
+                    <span class="section-icon">📈</span>
+                    <h2>Choose Investment Instruments</h2>
+                </div>
+            </div>
+
+            <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:1rem;">
+                Select instruments and enter your monthly SIP amount to see projected returns.
+            </p>
+
+            <div class="instruments-grid" id="instruments-grid">
+                <!-- Dynamically rendered by JS -->
+            </div>
+
+            <!-- Investment Duration -->
+            <div class="section-header">
+                <div class="section-label">
+                    <span class="section-icon">⏱️</span>
+                    <h2>Investment Duration</h2>
+                </div>
+                <div class="section-actions">
+                    <button class="btn-calculate" id="btn-calculate-returns">Calculate Returns</button>
+                </div>
+            </div>
+
+            <div class="glass-card" style="margin-bottom:1rem;">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="invest-years">Investment Period (Years)</label>
+                        <input type="number" id="invest-years" value="5" min="1" max="30" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="invest-lumpsum">Lump Sum Amount (₹) — Optional</label>
+                        <input type="number" id="invest-lumpsum" value="0" min="0" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Portfolio Summary -->
+            <div class="portfolio-summary" id="portfolio-summary" style="display:none;">
+                <div class="portfolio-stat">
+                    <div class="portfolio-stat-label">Total Invested</div>
+                    <div class="portfolio-stat-value" id="ps-invested">—</div>
+                </div>
+                <div class="portfolio-stat">
+                    <div class="portfolio-stat-label">Estimated Returns</div>
+                    <div class="portfolio-stat-value green" id="ps-returns">—</div>
+                </div>
+                <div class="portfolio-stat">
+                    <div class="portfolio-stat-label">Total Value</div>
+                    <div class="portfolio-stat-value blue" id="ps-total">—</div>
+                </div>
+            </div>
+
+            <!-- Projected Returns Table -->
+            <div class="glass-card" id="returns-card" style="display:none;">
+                <div class="chart-title">📋 Projected Returns Breakdown</div>
+                <div class="returns-table-wrapper">
+                    <table class="returns-table" id="returns-table">
+                        <thead>
+                            <tr>
+                                <th>Instrument</th>
+                                <th>Monthly SIP</th>
+                                <th>Annual Return</th>
+                                <th>Risk</th>
+                                <th>Invested</th>
+                                <th>Est. Value</th>
+                                <th style="text-align:right">Gain</th>
+                            </tr>
+                        </thead>
+                        <tbody id="returns-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Investment Growth Chart -->
+            <div class="charts-grid" id="invest-charts" style="display:none;margin-top:1rem;">
+                <div class="glass-card chart-container chart-container-full">
+                    <div class="chart-title">📈 Investment Growth Over Time</div>
+                    <canvas id="chart-invest-growth"></canvas>
+                </div>
+                <div class="glass-card chart-container">
+                    <div class="chart-title">🍩 Portfolio Allocation</div>
+                    <div class="donut-wrapper">
+                        <div class="donut-canvas-wrap">
+                            <canvas id="chart-invest-donut"></canvas>
+                        </div>
+                        <div class="donut-legend" id="invest-donut-legend"></div>
+                    </div>
+                </div>
+                <div class="glass-card chart-container">
+                    <div class="chart-title">📊 Invested vs Returns</div>
+                    <canvas id="chart-invest-bar"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             PAGE: TRANSACTIONS
+             ========================================== -->
+        <div class="content-page" id="page-transactions">
+
+            <!-- Add Transaction Form -->
+            <div class="section-header">
+                <div class="section-label">
+                    <span class="section-icon">💸</span>
+                    <h2>Add Transaction</h2>
+                </div>
             </div>
 
             <form id="txn-form" class="glass-card">
@@ -115,27 +330,31 @@
             </form>
 
             <!-- Recent Transactions -->
-            <div class="section-title">
-                <span class="section-icon">📜</span>
-                <h2>Recent Transactions</h2>
+            <div class="section-header">
+                <div class="section-label">
+                    <span class="section-icon">📜</span>
+                    <h2>Recent Transactions</h2>
+                </div>
             </div>
             <div id="txn-list" class="glass-card txn-list-container">
                 <p class="placeholder-text">Select a user to view transactions</p>
             </div>
+        </div>
 
-        </section>
+        <!-- ==========================================
+             PAGE: SIMULATE
+             ========================================== -->
+        <div class="content-page" id="page-simulate">
 
-        <!-- RIGHT COLUMN -->
-        <section class="col-right">
-
-            <!-- Simulation Controls -->
-            <div class="section-title">
-                <span class="section-icon">🚀</span>
-                <h2>Simulation Engine</h2>
+            <div class="section-header">
+                <div class="section-label">
+                    <span class="section-icon">⚡</span>
+                    <h2>Simulation Engine</h2>
+                </div>
             </div>
 
-            <div class="glass-card sim-controls">
-                <div class="form-row">
+            <div class="glass-card" style="margin-bottom:1rem;">
+                <div class="sim-controls-grid">
                     <div class="form-group">
                         <label for="sim-months">Months to Simulate</label>
                         <input type="number" id="sim-months" value="12" min="1" max="360">
@@ -144,17 +363,15 @@
                         <label for="sim-savings">Starting Savings (₹)</label>
                         <input type="number" id="sim-savings" value="0" min="0">
                     </div>
-                </div>
-                <div class="form-row">
                     <div class="form-group">
                         <label for="sim-debt-balance">Debt Balance (₹)</label>
                         <input type="number" id="sim-debt-balance" value="96000" min="0">
                     </div>
                 </div>
                 <div class="sim-buttons">
-                    <button id="btn-sim-normal" class="btn-secondary">Normal</button>
+                    <button id="btn-sim-normal" class="btn-secondary">📊 Normal</button>
                     <button id="btn-sim-antigravity" class="btn-antigravity">⚡ Antigravity</button>
-                    <button id="btn-sim-compare" class="btn-compare">Compare Both</button>
+                    <button id="btn-sim-compare" class="btn-compare">⚖️ Compare Both</button>
                 </div>
             </div>
 
@@ -181,22 +398,25 @@
                 </div>
             </div>
 
-            <!-- Charts -->
-            <div class="section-title">
-                <span class="section-icon">📈</span>
-                <h2>Projections</h2>
+            <!-- Simulation Charts -->
+            <div class="section-header">
+                <div class="section-label">
+                    <span class="section-icon">📈</span>
+                    <h2>Projections</h2>
+                </div>
             </div>
 
-            <div class="glass-card chart-container">
-                <canvas id="chart-networth"></canvas>
+            <div class="charts-grid">
+                <div class="glass-card chart-container chart-container-full">
+                    <canvas id="chart-networth"></canvas>
+                </div>
+                <div class="glass-card chart-container chart-container-full">
+                    <canvas id="chart-breakdown"></canvas>
+                </div>
             </div>
+        </div>
 
-            <div class="glass-card chart-container">
-                <canvas id="chart-breakdown"></canvas>
-            </div>
-
-        </section>
-    </main>
+    </div><!-- /main-wrapper -->
 
     <!-- Toast Notification -->
     <div id="toast" class="toast" aria-live="polite"></div>

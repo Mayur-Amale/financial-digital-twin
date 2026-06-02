@@ -127,9 +127,8 @@ router.get("/monthly/:userId/:year/:month", async (req, res) => {
 router.get("/audit", async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 50;
-    const [rows] = await pool.execute(
-      "SELECT * FROM audit_log ORDER BY created_at DESC LIMIT ?",
-      [limit]
+    const [rows] = await pool.query(
+      `SELECT * FROM audit_log ORDER BY created_at DESC LIMIT ${limit}`
     );
     res.json({ audit_log: rows });
   } catch (error) {
