@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const { testConnection } = require("./app/db");
 
 // Import routes
@@ -10,16 +11,14 @@ const simulationRouter = require("./routes/simulation");
 const reportsRouter = require("./routes/reports");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Root endpoint — confirms the server is running
-app.get("/", (req, res) => {
-  res.json({ message: "Financial Digital Twin API is running" });
-});
+// Serve frontend static files (HTML/CSS/JS)
+app.use(express.static(path.join(__dirname, "..", "frontend")));
 
 // Health check endpoint
 app.get("/health", (req, res) => {
@@ -33,6 +32,11 @@ app.use("/api/financial-state", financialStateRouter);
 app.use("/api/simulate", simulationRouter);
 app.use("/api/reports", reportsRouter);
 
+// Catch-all: serve index.html for any non-API route
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "frontend", "index.html"));
+});
+
 // Start server and connect to database
 async function startServer() {
   await testConnection();
@@ -42,3 +46,4 @@ async function startServer() {
 }
 
 startServer();
+
