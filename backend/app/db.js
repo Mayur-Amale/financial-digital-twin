@@ -4,7 +4,7 @@ const mysql = require("mysql2/promise");
 // Supports DATABASE_URL (cloud providers) or individual env vars (local dev fallback)
 const pool = process.env.DATABASE_URL
   ? mysql.createPool({
-      uri: process.env.DATABASE_URL,
+      uri: process.env.DATABASE_URL.split("?")[0],
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0,
@@ -14,7 +14,7 @@ const pool = process.env.DATABASE_URL
       host: process.env.DB_HOST || "localhost",
       user: process.env.DB_USER || "root",
       password: process.env.DB_PASSWORD || "",
-      database: process.env.DB_NAME || "financial_twin",
+      database: process.env.DB_NAME || "defaultdb",
       port: parseInt(process.env.DB_PORT || "3306"),
       waitForConnections: true,
       connectionLimit: 10,
